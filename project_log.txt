@@ -1,0 +1,25 @@
+Team meeting 1
+
+Date: 09/06
+Purpose: Introductions
+Attendance: Everyone
+Additional Notes:
+    Github established and people added
+
+
+Team meeting 2
+
+Date 09/20
+Purpose: Fill out SDP
+Attendance: Everyone
+Additional Notes:
+    Delegated roles, filled out the form, etc.
+
+
+Team meeting 3
+Date: 10/12
+Purpose: Fill out SRS
+Attendance: Everyone
+Additional Notes:
+    Created use-case diagram and filled out the form
+    Updated README
