@@ -40,3 +40,10 @@ Aspiring Software Engineer
 EECS 348, EECS 210, EECS 268, EECS 140, EECS 168
 No applicable experiences
 4-5 PM, Friday
+
+Yaeesh Mukadam
+Computer Science
+Aspiring Software Engineer
+EECS 168, EECS 268, EECS 348, EECS 388, EECS 210, EECS 140
+N/A
+3-5 PM, Friday
