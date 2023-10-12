@@ -47,3 +47,10 @@ Aspiring Software Engineer
 EECS 168, EECS 268, EECS 348, EECS 388, EECS 210, EECS 140
 N/A
 3-5 PM, Friday
+
+Humza Qureshi
+Computer Science
+Aspiring Software Engineer
+EECS 168, EECS 268, EECS 348, EECS 210, EECS 140
+N/A
+3:00 PM - 4:50 PM, Friday
