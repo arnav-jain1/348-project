@@ -1,2 +1,5 @@
 code/test.cpp
 /.vscode
+
+*.exe
+*.app
