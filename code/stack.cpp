@@ -68,5 +68,40 @@ Stack::~Stack() {
         current = current->getNextAddress();
         delete temp;
     }
+}
 
+bool Stack::empty() const {
+    //Returns true if the stack is empty
+    return this->size == 0;
+}
+
+
+std::ostream& operator<<(std::ostream& os, const Stack& stack) {
+    //Gets the pointer to the top node
+    Node* current = stack.top;
+    //While the current node is not nullptr
+    while (current != nullptr) {
+        //Prints the data from the current node
+        os << current->getData() << ' ';
+        //Sets the current node to the next node
+        current = current->getNextAddress();
+    }
+    //Returns the output stream
+    return os;
+}
+
+Stack Stack::reverse() {
+    //Creates a new stack
+    Stack reversed;
+    //Gets the pointer to the top node
+    Node* current = this->top;
+    //While the current node is not nullptr
+    while (current != nullptr) {
+        //Pushes the data from the current node to the new stack
+        reversed.push(current->getData());
+        //Sets the current node to the next node
+        current = current->getNextAddress();
+    }
+    //Returns the new stack
+    return reversed;
 }
