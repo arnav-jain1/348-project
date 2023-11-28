@@ -15,10 +15,11 @@ public:
     void print() const;
     int getSize() const;
     ~Stack();
+    bool empty() const;
 
+    friend std::ostream& operator<<(std::ostream& os, const Stack& stack);
 
-
-
+    Stack reverse();
 };
 
 #endif
