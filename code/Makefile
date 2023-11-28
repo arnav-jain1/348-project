@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -g
 
 # Executable name
-TARGET = main.app
+TARGET = main.out
 
 # Object files
 OBJS = main.o stack.o

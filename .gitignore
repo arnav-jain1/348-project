@@ -3,3 +3,4 @@ code/test.cpp
 
 *.exe
 *.app
+*.out
