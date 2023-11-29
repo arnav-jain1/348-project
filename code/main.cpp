@@ -7,6 +7,9 @@
 int precedence(char op) {
 // Switch statement to determine precedence
     switch (op) {
+        case 'n':
+        case 'p':
+            return 4;
         case '^':
             return 3;
         case '*':
@@ -26,6 +29,11 @@ bool isOperator(char c) {
     return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%';
 }
 
+bool isUnary(char c, char pre){
+//returns a bool of whether an operator is unary 
+    return (c == '-' || c == '+') && ( pre == '(' || isOperator(pre));    
+}
+
 Stack convertToRPN(const std::string& expr) {
     // Function to convert an infix expression to RPN
 
@@ -34,6 +42,7 @@ Stack convertToRPN(const std::string& expr) {
     Stack output;
 
     // Loop through each character in the expression
+    char prev = NULL;
     for (int i = 0; i < expr.length(); i++) {
         char token = expr[i];
         char next = expr[i + 1];
@@ -57,7 +66,9 @@ Stack convertToRPN(const std::string& expr) {
             operators.pop(); // Remove '('
         } else if (isOperator(token)) {
             // If the character is an operator,
-
+            if (isUnary(token,prev) && token == '-'){
+                continue;
+            }
             // pop operators from the operator stack to the output stack until either: 
             // an operator with lower precedence is found
             // the operator stack is empty
@@ -67,6 +78,7 @@ Stack convertToRPN(const std::string& expr) {
             }
             operators.push(token);
         }
+        prev = token;
     }
 
     // Pop any remaining operators from the operator stack to the output stack
