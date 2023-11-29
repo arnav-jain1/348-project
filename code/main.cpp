@@ -56,10 +56,6 @@ Stack convertToRPN(const std::string& expr) {
             operators.pop(); // Remove '('
         } else if (isOperator(token)) {
             // If the character is an operator,
-            if (!isdigit(next)) {
-                // If the next character is not a digit, throw an error
-                throw std::runtime_error("Invalid expression");
-            }
 
             // pop operators from the operator stack to the output stack until either: 
             // an operator with lower precedence is found
