@@ -91,13 +91,11 @@ int main() {
     std::getline(std::cin, expression);
     // Removes any whitespace in expression and trims the remaining string
     expression.erase(std::remove(expression.begin(), expression.end(), ' '), expression.end());
+    // Counts the number of ')' characters 
     int pEndCount = std::count(expression.begin(), expression.end(), ')');
+    // Counts the number of '(' characters 
     int pStartCount = std::count(expression.begin(), expression.end(), '(');
-    if (pEndCount % 2 == 0) {
-        throw std::runtime_error("Unmatched parantheses");
-    } else {
-    }
-    if (pStartCount % 2 == 0) {
+    if (pEndCount != pStartCount) {
         throw std::runtime_error("Unmatched parantheses");
     } else {
     }
