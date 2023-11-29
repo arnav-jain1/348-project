@@ -2,6 +2,7 @@
 #include "stack.h"
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 int precedence(char op) {
 // Switch statement to determine precedence
@@ -80,8 +81,12 @@ Stack convertToRPN(const std::string& expr) {
 
 int main() {
     std::string expression;
+    // Initiates user input as a string
     std::cout << "Enter an expression: ";
+    // Gets the line using cin and stores an expression
     std::getline(std::cin, expression);
+    // Removes any whitespace in expression and trims the remaining string
+    expression.erase(std::remove(expression.begin(), expression.end(), ' '), expression.end());
 
     Stack rpn = convertToRPN(expression);
     std::cout << "RPN: " << rpn << std::endl;
