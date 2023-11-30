@@ -4,7 +4,7 @@
 #include <cctype>
 #include <cmath>
 #include <stdexcept>
-
+#include <algorithm>
 // Function to determine the precedence of operators
 int getPrecedence(char op) {
     if (op == '+' || op == '-') return 1;
@@ -31,6 +31,30 @@ double applyOp(double a, double b, char op) {
         case '^': return pow(a, b);  // Exponentiation
         default: throw std::runtime_error("Invalid operator!");
     }
+}
+
+bool isUnary(char token, char prev){
+    if (token == '+' || token == '-'){
+        if (!isdigit(prev) && !(prev ==')')){
+            return true;
+        }
+    }
+    return false;
+}
+
+std::string parser(std::string expr){
+    char prev = '(';
+    std::string out= "";
+    for(int i =0; i<expr.length();i++){
+        if(isUnary(expr[i],prev)){
+            out+= "0";
+            out+= expr[i];
+        }else{
+            out+= expr[i];
+        }
+        prev = expr[i];
+    }
+    return out;
 }
 
 // Function to evaluate a given expression
@@ -107,16 +131,16 @@ int main() {
     // Counts the number of '(' characters 
     int pStartCount = std::count(expression.begin(), expression.end(), '(');
     if (pEndCount != pStartCount) {
-        throw std::runtime_error("Unmatched parantheses");
+        std::cout << ("Unmatched parantheses")<< std::endl;
+        return 1; 
     } else {
     }
 
     try {
-        double result = evaluateExpression(expression);
+        double result = evaluateExpression(parser(expression));
         std::cout << "Result: " << result << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
-
     return 0;
 }
