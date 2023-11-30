@@ -7,6 +7,8 @@
 int precedence(char op) {
 // Switch statement to determine precedence
     switch (op) {
+        case 'r':
+            return 5;
         case 'n':
         case 'p':
             return 4;
@@ -54,7 +56,12 @@ Stack convertToRPN(const std::string& expr) {
             throw std::runtime_error("Invalid character in expression");
         } else if (isdigit(token)) {
             // If the character is a digit, push it to the output stack
+            if(isdigit(prev)){
+                output.push(token);
+                output.push('r');
+            }else{
             output.push(token);
+            }
         } else if (token == '(') {
             // If the character is a left parenthesis, push it to the operator stack
             operators.push(token);
