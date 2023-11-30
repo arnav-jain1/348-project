@@ -6,7 +6,7 @@ CXXFLAGS = -Wall -Wextra -g
 TARGET = main.out
 
 # Object files
-OBJS = main.o stack.o
+OBJS = main.o
 
 # Rule to make everything
 all: $(TARGET)
@@ -20,11 +20,8 @@ $(TARGET): $(OBJS)
 	rm -f $(OBJS) # Command added to delete object files
 
 # Rule to compile the source files
-main.o: main.cpp stack.h
+main.o: main.cpp
 	$(CXX) $(CXXFLAGS) -c main.cpp
-
-stack.o: stack.cpp stack.h node.h
-	$(CXX) $(CXXFLAGS) -c stack.cpp
 
 # Rule to clean files
 clean:
