@@ -74,6 +74,7 @@ double evaluateExpression(const std::string& expr) {
     std::stack<double> values; // Stack for storing numbers
     std::stack<char> ops;      // Stack for storing operators
     std::string numberBuffer;  // Buffer to accumulate digits of a number and then convert to double
+    bool checkLeftOperator = true; // boolean to track if last token processed is operator, if so then it will throw error
 
     // Loop through each character in the expression
     for (int i = 0; i < expr.length(); i++) {
@@ -82,6 +83,7 @@ double evaluateExpression(const std::string& expr) {
         // If the character is a digit or a decimal point, add it to the number buffer
         if (isdigit(expr[i]) || expr[i] == '.') {
             numberBuffer += expr[i];
+            checkLeftOperator = false;
         } else {
             // If number buffer is not empty, convert it to a number and push onto the stack
             if (!numberBuffer.empty()) {
@@ -91,8 +93,13 @@ double evaluateExpression(const std::string& expr) {
 
             // Handling parentheses
             if (expr[i] == '(') {
+                if (checkLeftOperator == false && expr[i-1] != '('){
+                    throw std::runtime_error("Missing operator!");
+                }
                 ops.push(expr[i]);
+                checkLeftOperator = false;
             } else if (expr[i] == ')') {
+                
                 // Evaluate the expression inside the parentheses
 
                 // while the operators stack is not empty and the top of the stack is not a '('
@@ -110,8 +117,15 @@ double evaluateExpression(const std::string& expr) {
                 if (!ops.empty()) {
                     ops.pop(); // Remove the '(' from the stack
                 }
+                checkLeftOperator = false;
             } else if (isOperator(expr[i])) {
                 // If the current character is an operator, process the top of the stacks
+                if (checkLeftOperator && expr[i] != '('){
+                    throw std::runtime_error("Operator without operand!");
+                }
+                if (i+1 >= expr.length() || expr[i+1] == ')'){
+                    throw std::runtime_error("Missing operand/Invalid operating sequence!");
+                }
                 while (!ops.empty() && getPrecedence(ops.top()) >= getPrecedence(expr[i])) {
                     // If the top of the operators stack has higher precedence than the current operator, apply the operator to the top 2 values from the numbers stack and push the result to the numbers stack
                     double val2 = values.top(); 
@@ -123,6 +137,7 @@ double evaluateExpression(const std::string& expr) {
                     values.push(applyOp(val1, val2, op));
                 }
                 ops.push(expr[i]); // Push current operator to stack
+                checkLeftOperator = true;
             } else {
                 throw std::runtime_error("Invalid input!"); // Error for invalid characters
             }
