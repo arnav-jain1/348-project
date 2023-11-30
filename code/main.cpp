@@ -57,13 +57,27 @@ std::string parser(std::string expr){
     // The default previous character is '(' and the output string is empty
     char prev = '(';
     std::string out= "";
+    // Boolean to track if a closing parenthesis is needed
+    bool closeP = false;
 
-    // Loop through each character in the expression, if the current character is a unary operator, add 0 before it, always update the previous character and add the current character to the output string
+    // Loop through each character in the expression, if the current character is a unary operator, add (0 and the operator to the output string, otherwise add the character to the output string
     for(int i =0; i<expr.length();i++){
         if(isUnary(expr[i],prev)){
-            out+= "0";
+            out+= "(0";
+            out+= expr[i];
+            // Set the boolean to true to add a closing parenthesis later
+            closeP = true;
+        } else {
+            out+= expr[i];
+            // After adding the next char, check if the boolean is true. If it is, add a closing parenthesis and set the boolean to false
+            if (closeP){
+                out+= ")";
+                closeP = false;
+            }
         }
-        out+= expr[i];
+        
+
+        // Set the previous character to the current character
         prev = expr[i];
     }
     return out;
