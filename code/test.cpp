@@ -88,6 +88,16 @@ int main() {
     std::string expression;
     std::cout << "Enter an expression: ";
     std::getline(std::cin, expression);
+    // Removes any whitespace in expression and trims the remaining string
+    expression.erase(std::remove(expression.begin(), expression.end(), ' '), expression.end());
+    // Counts the number of ')' characters 
+    int pEndCount = std::count(expression.begin(), expression.end(), ')');
+    // Counts the number of '(' characters 
+    int pStartCount = std::count(expression.begin(), expression.end(), '(');
+    if (pEndCount != pStartCount) {
+        throw std::runtime_error("Unmatched parantheses");
+    } else {
+    }
 
     try {
         double result = evaluateExpression(expression);
