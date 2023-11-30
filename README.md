@@ -21,6 +21,7 @@ No applicable experiences
 
 
 Zonaid Prithu
+Computer Science
 Aspiring Software Engineer
 EECS 348, EECS 210, EECS 268, EECS 140, EECS 168
 No applicable experiences
