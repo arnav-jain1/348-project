@@ -1,103 +1,180 @@
 #include <iostream>
-#include "stack.h"
+#include <stack>
 #include <string>
-#include <sstream>
+#include <cctype>
+#include <cmath>
+#include <stdexcept>
 #include <algorithm>
+// Function to determine the precedence of operators
+int getPrecedence(char op) {
+    // Higher number means higher precedence
+    if (op == '+' || op == '-') return 1;
+    if (op == '*' || op == '/' || op == '%') return 2;
+    if (op == '^') return 3;
+    return 0;
+}
 
-int precedence(char op) {
-// Switch statement to determine precedence
-    switch (op) {
-        case '^':
-            return 3;
-        case '*':
-        case '/':
-        case '%':
-            return 2;
-        case '+':
-        case '-':
-            return 1;
-        default:
-            return 0;
+// Function to check if a character is an operator
+bool isOperator(char c) {
+    if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^') {
+        return true;
+    } else {
+        return false;
     }
 }
 
-bool isOperator(char c) {
-// Function to determine if a character is an operator
-    return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '%';
+// Function to apply an operation to two operands
+double applyOp(double a, double b, char op) {
+    switch (op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': 
+            // Division by zero is undefined
+            if (b == 0) throw std::runtime_error("Division by zero!");
+            return a / b;
+        case '%': return fmod(a, b); // Modulus operation
+        case '^': return pow(a, b);  // Exponentiation
+        // Invalid operator as input
+        default: throw std::runtime_error("Invalid operator!");
+    }
 }
 
-Stack convertToRPN(const std::string& expr) {
-    // Function to convert an infix expression to RPN
+// Function to check if a character is a unary operator
+bool isUnary(char token, char prev){
+    if (token == '+' || token == '-'){
+        if (!isdigit(prev) && !(prev ==')')){
+            // The previous character is not a digit or a closing parenthesis and the current character is a unary operator, then true
+            return true;
+        }
+    }
+    // Otherwise, false
+    return false;
+}
 
-    // Create stacks for operators and output
-    Stack operators;
-    Stack output;
+// Function to parse the expression and add 0 before unary operators
+std::string parser(std::string expr){
+    // The default previous character is '(' and the output string is empty
+    char prev = '(';
+    std::string out= "";
+
+    // Loop through each character in the expression, if the current character is a unary operator, add 0 before it, always update the previous character and add the current character to the output string
+    for(int i =0; i<expr.length();i++){
+        if(isUnary(expr[i],prev)){
+            out+= "0";
+        }
+        out+= expr[i];
+        prev = expr[i];
+    }
+    return out;
+}
+
+// Function to evaluate a given expression
+double evaluateExpression(const std::string& expr) {
+    std::stack<double> values; // Stack for storing numbers
+    std::stack<char> ops;      // Stack for storing operators
+    std::string numberBuffer;  // Buffer to accumulate digits of a number and then convert to double
 
     // Loop through each character in the expression
     for (int i = 0; i < expr.length(); i++) {
-        char token = expr[i];
-        char next = expr[i + 1];
-        if (isspace(token)) {
-            // Ignore whitespace
-            continue;
-        } else if (!(isdigit(token) || isOperator(token) || token == '(' || token == ')')) {
-            // Throw an error if the character is not a digit, operator, or parenthesis
-            throw std::runtime_error("Invalid character in expression");
-        } else if (isdigit(token)) {
-            // If the character is a digit, push it to the output stack
-            output.push(token);
-        } else if (token == '(') {
-            // If the character is a left parenthesis, push it to the operator stack
-            operators.push(token);
-        } else if (token == ')') {
-            // If the character is a right parenthesis, pop operators from the operator stack to the output stack until a left parenthesis is found
-            while (!operators.empty() && operators.peek() != '(') {
-                output.push(operators.pop());
-            }
-            operators.pop(); // Remove '('
-        } else if (isOperator(token)) {
-            // If the character is an operator,
+        if (isspace(expr[i])) continue; // Skip spaces but there shouldnt be any
 
-            // pop operators from the operator stack to the output stack until either: 
-            // an operator with lower precedence is found
-            // the operator stack is empty
-            // the operator is a right associative operator (^)
-            while (   (!operators.empty()) && (precedence(operators.peek()) >= precedence(token)) && (token != '^')) {
-                output.push(operators.pop());
+        // If the character is a digit or a decimal point, add it to the number buffer
+        if (isdigit(expr[i]) || expr[i] == '.') {
+            numberBuffer += expr[i];
+        } else {
+            // If number buffer is not empty, convert it to a number and push onto the stack
+            if (!numberBuffer.empty()) {
+                values.push(std::stod(numberBuffer));
+                numberBuffer = "";
             }
-            operators.push(token);
+
+            // Handling parentheses
+            if (expr[i] == '(') {
+                ops.push(expr[i]);
+            } else if (expr[i] == ')') {
+                // Evaluate the expression inside the parentheses
+
+                // while the operators stack is not empty and the top of the stack is not a '('
+                while (!ops.empty() && ops.top() != '(') {
+                    // Get the top 2 values from the numbers stack, remove it, get the top operator from the operators stack, remove it, apply the operator to the values and push the result to the numbers stack
+                    double val2 = values.top(); 
+                    values.pop();
+                    double val1 = values.top(); 
+                    values.pop();
+                    char op = ops.top(); 
+                    ops.pop();
+
+                    values.push(applyOp(val1, val2, op));
+                }
+                if (!ops.empty()) {
+                    ops.pop(); // Remove the '(' from the stack
+                }
+            } else if (isOperator(expr[i])) {
+                // If the current character is an operator, process the top of the stacks
+                while (!ops.empty() && getPrecedence(ops.top()) >= getPrecedence(expr[i])) {
+                    // If the top of the operators stack has higher precedence than the current operator, apply the operator to the top 2 values from the numbers stack and push the result to the numbers stack
+                    double val2 = values.top(); 
+                    values.pop();
+                    double val1 = values.top(); 
+                    values.pop();
+                    char op = ops.top(); 
+                    ops.pop();
+                    values.push(applyOp(val1, val2, op));
+                }
+                ops.push(expr[i]); // Push current operator to stack
+            } else {
+                throw std::runtime_error("Invalid input!"); // Error for invalid characters
+            }
         }
     }
 
-    // Pop any remaining operators from the operator stack to the output stack
-    while (!operators.empty()) {
-        output.push(operators.pop());
+    // Push the last number in the buffer to the stack
+    if (!numberBuffer.empty()) {
+        values.push(std::stod(numberBuffer));
     }
 
-    // Reverse the output stack and return it
-    Stack reversed = output.reverse();
-    return reversed;
+    // Complete any remaining operations with the same logic as above
+    while (!ops.empty()) {
+        double val2 = values.top(); 
+        values.pop();
+        double val1 = values.top(); 
+        values.pop();
+        char op = ops.top(); 
+        ops.pop();
+        values.push(applyOp(val1, val2, op));
+    }
+
+    return values.top(); // Return the final result
 }
 
 int main() {
+    // Get the expression from the user
     std::string expression;
-    // Initiates user input as a string
     std::cout << "Enter an expression: ";
-    // Gets the line using cin and stores an expression
     std::getline(std::cin, expression);
+
+
     // Removes any whitespace in expression and trims the remaining string
     expression.erase(std::remove(expression.begin(), expression.end(), ' '), expression.end());
     // Counts the number of ')' characters 
     int pEndCount = std::count(expression.begin(), expression.end(), ')');
     // Counts the number of '(' characters 
     int pStartCount = std::count(expression.begin(), expression.end(), '(');
-    if (pEndCount != pStartCount) {
-        throw std::runtime_error("Unmatched parantheses");
-    } else {
-    }
     
-    Stack rpn = convertToRPN(expression);
-    std::cout << "RPN: " << rpn << std::endl;
+    // If the number of ')' and '(' characters are not equal, then there is an unmatched parantheses, exit the program
+    if (pEndCount != pStartCount) {
+        std::cout << ("Unmatched parantheses")<< std::endl;
+        return 1; 
+    }
 
+    try {
+        // Evaluate the expression and print the result
+        double result = evaluateExpression(parser(expression));
+        std::cout << "Result: " << result << std::endl;
+    } catch (const std::exception& e) {
+        // Print the error message, if any
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
     return 0;
 }
