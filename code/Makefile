@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -g
 
 # Executable name
-TARGET = main.out
+TARGET = calculon.out
 
 # Object files
 OBJS = main.o

@@ -58,28 +58,36 @@ std::string parser(std::string expr){
     char prev = '(';
     std::string out= "";
     // Boolean to track if a closing parenthesis is needed
-    bool closeP = false;
-
+    int closeP = 0;
     // Loop through each character in the expression, if the current character is a unary operator, add (0 and the operator to the output string, otherwise add the character to the output string
     for(int i =0; i<expr.length();i++){
+        if (i == 0 && expr[i] == '+'){
+            continue;
+        }
+
         if(isUnary(expr[i],prev)){
             out+= "(0";
             out+= expr[i];
             // Set the boolean to true to add a closing parenthesis later
-            closeP = true;
+            closeP++;
         } else {
             out+= expr[i];
             // After adding the next char, check if the boolean is true. If it is, add a closing parenthesis and set the boolean to false
-            if (closeP){
+            if (closeP > 0 && expr[i] == ')'){
                 out+= ")";
-                closeP = false;
+                closeP--;
             }
         }
-        
-
         // Set the previous character to the current character
         prev = expr[i];
     }
+
+    while (closeP > 0){
+        // If the boolean is true after the loop, add a closing parenthesis
+        out+= ")";
+        closeP--;
+    }
+
     return out;
 }
 
@@ -92,7 +100,7 @@ double evaluateExpression(const std::string& expr) {
 
     // Loop through each character in the expression
     for (int i = 0; i < expr.length(); i++) {
-        if (isspace(expr[i])) continue; // Skip spaces but there shouldnt be any
+        if (isspace(expr[i])) continue; // Skip spaces but there shouldn't be any
 
         // If the character is a digit or a decimal point, add it to the number buffer
         if (isdigit(expr[i]) || expr[i] == '.') {
@@ -177,6 +185,24 @@ double evaluateExpression(const std::string& expr) {
     return values.top(); // Return the final result
 }
 
+void invalidParenthesisChecker(std::string &expr) {
+    // Check for invalid parenthesis
+
+    // Loop through each character in the expression
+    char prev = '\0';
+    for (int i = 0; i < expr.length(); i++) {
+        //If the current character is a (, check if the previous character is a digit, if so, throw an error
+        if (expr[i] == '(' && isdigit(prev)) {
+            throw std::runtime_error("Parenthesis after digit.");
+        } else if (expr[i] == ')' && isOperator(prev)) {
+        //If the current character is a ), check if the previous character is an operator, if so, throw an error
+            throw std::runtime_error("Operator before parenthesis.");
+        } 
+
+        prev = expr[i];
+    }
+}
+
 int main() {
     // Get the expression from the user
     std::string expression;
@@ -191,13 +217,14 @@ int main() {
     // Counts the number of '(' characters 
     int pStartCount = std::count(expression.begin(), expression.end(), '(');
     
-    // If the number of ')' and '(' characters are not equal, then there is an unmatched parantheses, exit the program
+    // If the number of ')' and '(' characters are not equal, then there is an unmatched parenthesis, exit the program
     if (pEndCount != pStartCount) {
-        std::cout << ("Unmatched parantheses")<< std::endl;
+        std::cout << ("Unmatched parenthesis")<< std::endl;
         return 1; 
     }
 
     try {
+        invalidParenthesisChecker(expression);
         // Evaluate the expression and print the result
         double result = evaluateExpression(parser(expression));
         std::cout << "Result: " << result << std::endl;
