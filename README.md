@@ -1,6 +1,7 @@
 # 348-project
 
 For submissions look in the Submissions/ folder
+To run the program run Submissions/Calculon/calculon.out 
 
 
 
