@@ -117,14 +117,21 @@ double evaluateExpression(const std::string& expr) {
             if (expr[i] == '(') {
                 if (checkLeftOperator == false && expr[i-1] != '('){
                     throw std::runtime_error("Missing operator!");
+                    //Throw an error if the previous character is not an operator
                 }
                 ops.push(expr[i]);
                 checkLeftOperator = false;
             } else if (expr[i] == ')') {
                 if (i+1 < expr.length() && isdigit(expr[i+1])){
                     throw std::runtime_error("Missing operator!");
+                    //Throw an error if the next character is a digit
+                }
+                if (expr[i-1] == '('){
+                    throw std::runtime_error("Empty parenthesis!");
+                    //Throw an error if the previous character is a '(' (empty parenthesis)
                 }
                 
+
                 // Evaluate the expression inside the parentheses
 
                 // while the operators stack is not empty and the top of the stack is not a '('

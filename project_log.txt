@@ -31,3 +31,23 @@ Purpose: Fill out SAD
 Attendance: Everyone
 Additional Notes: 
 	Filled out the Form, discussed plans on how to implement.
+
+
+Team Meeting 5
+Date: 11/30
+Purpose: Work on implementation
+Attendance: Everyone
+Additional Notes:
+    Did most of the implementation
+    Started Test Cases and User manual
+    Delegated tasks
+
+
+Team Meeting 6: 
+Date: 12/1
+Purpose: Finish implementation
+Attendance: Everyone
+Additional Notes:
+    Finished implementation
+    Handled Errors
+    Finished Forms
