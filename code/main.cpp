@@ -113,6 +113,9 @@ double evaluateExpression(const std::string& expr) {
                 ops.push(expr[i]);
                 checkLeftOperator = false;
             } else if (expr[i] == ')') {
+                if (i+1 < expr.length() && isdigit(expr[i+1])){
+                    throw std::runtime_error("Missing operator!");
+                }
                 
                 // Evaluate the expression inside the parentheses
 
